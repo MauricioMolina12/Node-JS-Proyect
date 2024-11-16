@@ -3,7 +3,7 @@ import routesUsers from '../routes/users.routes';
 import connection from '../db/connection';
 import routesCars from '../routes/cars.routes';
 import routesBookings from '../routes/bookings.routes';
-
+import cors from 'cors';
 
 class Server {
     private app: Application;
@@ -25,7 +25,8 @@ class Server {
 
     middlewares(){
         //Parseo del JSON - para que cuando se recibe un json lo convierta a objeto
-        this.app.use(express.json())
+        this.app.use(express.json());
+        this.app.use(cors());
     }
 
     routes(){

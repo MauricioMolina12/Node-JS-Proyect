@@ -50,15 +50,21 @@ const tokensExp = (date) => {
 };
 exports.tokensExp = tokensExp;
 const deleteTokens = (req, res) => {
-    const { id_user, token } = req.body;
-    connection_1.default.query('DELETE FROM UserTokens WHERE id_user = ? AND token = ?', [id_user, token], (error) => {
-        if (error)
-            console.error('Error eliminando tokens caducados:', error);
-        res.json({
-            msg: "logout succesfull"
+    var _a;
+    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1]; // Extrae el token del encabezado Authorization
+    if (!token) {
+        res.status(400).json({ message: 'Token no proporcionado' });
+    }
+    else {
+        // Elimina el token de la base de datos
+        connection_1.default.query('DELETE FROM UserTokens WHERE token = ?', [token], (error, results) => {
+            if (error) {
+                return res.status(500).json({ message: 'Error al procesar el logout' });
+            }
+            res.json({ message: 'Logout exitoso' });
         });
-    });
-    const date = new Date(Date.now());
-    (0, exports.tokensExp)(date);
+        const date = new Date(Date.now());
+        (0, exports.tokensExp)(date);
+    }
 };
 exports.deleteTokens = deleteTokens;
