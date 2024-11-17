@@ -71,7 +71,7 @@ export const deleteTokens = (req: Request, res: Response) =>{
             if (error) {
                 return res.status(500).json({ message: 'Error al procesar el logout' });
             }
-
+            console.log(results)
             res.json({ message: 'Logout exitoso' });
         });
 
@@ -81,4 +81,23 @@ export const deleteTokens = (req: Request, res: Response) =>{
     }
     
     
+}
+
+export const validate_token = (req: Request, res: Response) => {
+    const { token } = req.body;
+    const date = new Date(Date.now());
+    
+
+    try {
+        // Verifica la firma y la expiración del token
+        const decoded = jwt.verify(token, JWT_SECRET); // Decodifica el token
+
+        tokensExp(date);
+
+        // Si la verificación es exitosa, devuelve la respuesta de validación
+        res.json({ valid: true });
+    } catch (err) {
+        // Si el token es inválido o ha expirado, devuelve un error
+        res.status(401).json({ valid: false, message: 'Token inválido o expirado' });
+    }
 }

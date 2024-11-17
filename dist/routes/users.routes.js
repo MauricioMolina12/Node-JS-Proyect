@@ -11,4 +11,5 @@ router.post('/logout', users_tokens_controller_1.deleteTokens);
 router.post('/', users_controller_1.postUser);
 router.post('/login', users_controller_1.verifyUserCredentials, users_tokens_controller_1.generateToken);
 router.put('/:id', users_controller_1.putUser);
+router.post('/validate-token', users_tokens_controller_1.validate_token);
 exports.default = router;

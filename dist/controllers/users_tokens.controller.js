@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTokens = exports.tokensExp = exports.generateToken = void 0;
+exports.validate_token = exports.deleteTokens = exports.tokensExp = exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const connection_1 = __importDefault(require("../db/connection"));
 // Secret key for JWT
@@ -61,6 +61,7 @@ const deleteTokens = (req, res) => {
             if (error) {
                 return res.status(500).json({ message: 'Error al procesar el logout' });
             }
+            console.log(results);
             res.json({ message: 'Logout exitoso' });
         });
         const date = new Date(Date.now());
@@ -68,3 +69,19 @@ const deleteTokens = (req, res) => {
     }
 };
 exports.deleteTokens = deleteTokens;
+const validate_token = (req, res) => {
+    const { token } = req.body;
+    const date = new Date(Date.now());
+    try {
+        // Verifica la firma y la expiración del token
+        const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET); // Decodifica el token
+        (0, exports.tokensExp)(date);
+        // Si la verificación es exitosa, devuelve la respuesta de validación
+        res.json({ valid: true });
+    }
+    catch (err) {
+        // Si el token es inválido o ha expirado, devuelve un error
+        res.status(401).json({ valid: false, message: 'Token inválido o expirado' });
+    }
+};
+exports.validate_token = validate_token;

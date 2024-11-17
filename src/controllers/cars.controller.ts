@@ -2,16 +2,18 @@ import { Request, Response } from "express";
 import connection from "../db/connection";
 import { RowDataPacket } from "mysql2";
 
-interface Car extends RowDataPacket {
-    license_plate: string;
-    brand: string;
-    model: string;
-    car_year: number;
-    color: string;
-    mileage: number;
-    car_type: 'Sedan' | 'SUV' | 'Moto' | 'Camion' | 'Camioneta'; 
-    daily_fee: number;
-}
+export interface Car extends RowDataPacket {
+    license_plate: string;      // Placa del vehículo (VARCHAR(6))
+    brand: string;              // Marca del vehículo (VARCHAR(30))
+    model: string;              // Modelo del vehículo (VARCHAR(30))
+    car_year: number;           // Año del vehículo (YEAR)
+    color: string;              // Color del vehículo (VARCHAR(150))
+    mileage: number;            // Kilometraje del vehículo (INT)
+    car_type: 'Sedan' | 'SUV' | 'Moto' | 'Camion' | 'Camioneta'; // Tipo de vehículo (ENUM)
+    daily_fee: number;          // Tarifa diaria (DECIMAL(10, 2))
+    seats: number;              // Número de asientos (INT)
+    image_path: string;         // Ruta de la imagen (VARCHAR(255))
+  }
 
 
 export const getCars = (req: Request, res: Response) => {
