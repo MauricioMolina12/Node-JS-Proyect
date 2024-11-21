@@ -1,27 +1,43 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.putModifyBookings = exports.putCancelBookings = exports.postBookings = exports.deleteBookings = exports.getBooking = exports.getBookings = void 0;
+exports.putModifyBookings = exports.putCancelBookings = exports.postBookings = exports.deleteBookings = exports.getBookings = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
-const getBookings = (req, res) => {
-    connection_1.default.query('SELECT * FROM Bookings', ((error, data) => {
+const users_tokens_controller_1 = require("./users_tokens.controller");
+const getBookings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = yield (0, users_tokens_controller_1.id_token)(req.params.token);
+    connection_1.default.query('SELECT role_id FROM Users WHERE id = ?', [userId], (error, data) => {
+        var _a;
         if (error)
             throw error;
-        res.json(data);
-    }));
-};
+        if (((_a = data[0]) === null || _a === void 0 ? void 0 : _a.role_id) === 4) {
+            connection_1.default.query('SELECT * FROM bookings_customers WHERE id_cliente = ?', [userId], ((error, data) => {
+                if (error)
+                    throw error;
+                res.json(data);
+            }));
+        }
+        else {
+            connection_1.default.query('SELECT * FROM bookings_customers;', ((error, data) => {
+                if (error)
+                    throw error;
+                res.json(data);
+            }));
+        }
+    });
+});
 exports.getBookings = getBookings;
-const getBooking = (req, res) => {
-    const { id } = req.params;
-    connection_1.default.query('SELECT * FROM Bookings WHERE id = ?', id, ((error, data) => {
-        if (error)
-            throw error;
-        res.json(data[0]);
-    }));
-};
-exports.getBooking = getBooking;
 const deleteBookings = (req, res) => {
     const { id } = req.params;
     connection_1.default.query('DELETE FROM Bookings WHERE id = ?', id, ((error, data) => {
@@ -34,9 +50,10 @@ const deleteBookings = (req, res) => {
     }));
 };
 exports.deleteBookings = deleteBookings;
-const postBookings = (req, res) => {
-    const { d_start, d_end, id_car, id_cos } = req.body;
-    connection_1.default.query('CALL make_a_booking(?, ?, ?, ?)', [d_start, d_end, id_car, id_cos], ((error, data) => {
+const postBookings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { d_start, d_end, id_car, token } = req.body;
+    const userId = yield (0, users_tokens_controller_1.id_token)(token);
+    connection_1.default.query('CALL make_a_booking(?, ?, ?, ?)', [d_start, d_end, id_car, userId], ((error, data) => {
         if (error) {
             console.error("Error database details: " + error.message);
             return res.status(500).json({
@@ -49,7 +66,7 @@ const postBookings = (req, res) => {
             data: data
         });
     }));
-};
+});
 exports.postBookings = postBookings;
 const putCancelBookings = (req, res) => {
     const { id } = req.params;

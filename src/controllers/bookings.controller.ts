@@ -1,24 +1,30 @@
 import { Request, Response } from "express";
 import connection from "../db/connection";
 import { Booking } from "../interfaces";
+import { id_token } from "./users_tokens.controller";
 
 
 
-export const getBookings = (req: Request, res: Response) => {
-    connection.query('SELECT * FROM Bookings', ((error, data) => {
+export const getBookings = async (req: Request, res: Response) => {
+
+    const userId = await id_token(req.params.token);
+
+    connection.query<any>('SELECT role_id FROM Users WHERE id = ?', [userId], (error, data) => {
         if(error) throw error;
-        res.json(data);
-    }))
-}
+        if (data[0]?.role_id === 4) {
+            connection.query('SELECT * FROM bookings_customers WHERE id_cliente = ?', [userId], ((error, data) => {
+                if(error) throw error;
+                res.json(data);
+            }))
+        } else {
+            connection.query('SELECT * FROM bookings_customers;', ((error, data) => {
+                if(error) throw error;
+                res.json(data);
+            }))
+        }
+    })
 
-export const getBooking = (req: Request, res: Response) => {
-
-    const { id } = req.params;
     
-    connection.query<Booking[]>('SELECT * FROM Bookings WHERE id = ?', id, ((error, data) => {
-        if(error) throw error;  
-        res.json(data[0]);
-    }))
 }
 
 export const deleteBookings = (req: Request, res: Response) => {
@@ -34,11 +40,13 @@ export const deleteBookings = (req: Request, res: Response) => {
     }))
 }
 
-export const postBookings = (req: Request, res: Response) => {
+export const postBookings = async (req: Request, res: Response) => {
 
-    const { d_start, d_end, id_car, id_cos } = req.body;
+    const { d_start, d_end, id_car, token } = req.body;
+
+    const userId = await id_token(token);
     
-    connection.query('CALL make_a_booking(?, ?, ?, ?)', [d_start, d_end, id_car, id_cos], ((error, data) => {
+    connection.query('CALL make_a_booking(?, ?, ?, ?)', [d_start, d_end, id_car, userId], ((error, data) => {
         if(error) {
             console.error("Error database details: " + error.message);
             return res.status(500).json({

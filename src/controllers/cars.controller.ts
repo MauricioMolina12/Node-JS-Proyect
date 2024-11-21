@@ -69,3 +69,12 @@ export const availableCar = (req: Request, res: Response) => {
         res.json(data);
     }))
 }
+
+export const total_cost = (req: Request, res: Response) => {
+    const { start, end, license_plate } = req.body;
+    
+    connection.query('SELECT total_price(?, ?, ?) AS total_cost', [start, end, license_plate], ((error, data) => {
+        if(error) throw error;
+        res.json(data);
+    }))
+}
