@@ -8,6 +8,7 @@ const users_routes_1 = __importDefault(require("../routes/users.routes"));
 const connection_1 = __importDefault(require("../db/connection"));
 const cars_routes_1 = __importDefault(require("../routes/cars.routes"));
 const bookings_routes_1 = __importDefault(require("../routes/bookings.routes"));
+const favoritescar_routes_1 = __importDefault(require("../routes/favoritescar.routes"));
 const cors_1 = __importDefault(require("cors"));
 class Server {
     constructor() {
@@ -30,7 +31,8 @@ class Server {
     routes() {
         this.app.use('/api/users', users_routes_1.default),
             this.app.use('/api/cars', cars_routes_1.default),
-            this.app.use('/api/bookings', bookings_routes_1.default);
+            this.app.use('/api/bookings', bookings_routes_1.default),
+            this.app.use('/api/favoritesCars', favoritescar_routes_1.default);
     }
     conectDB() {
         connection_1.default.connect((error) => {

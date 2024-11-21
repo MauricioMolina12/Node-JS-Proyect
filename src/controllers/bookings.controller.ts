@@ -1,18 +1,7 @@
 import { Request, Response } from "express";
 import connection from "../db/connection";
-import { RowDataPacket } from "mysql2";
+import { Booking } from "../interfaces";
 
-
-
-interface Booking extends RowDataPacket {
-    id: number;               // Correspondiente a INT 
-    l_plate: string;         // Correspondiente a VARCHAR(6)
-    c_id: number;            // Correspondiente a INT
-    start_date: string;      // Correspondiente a DATE (puedes usar string o Date)
-    end_date: string;        // Correspondiente a DATE (puedes usar string o Date)
-    b_status: 'Pendiente' | 'Cancelada' | 'Completada' | 'Activa'; // Correspondiente a ENUM
-    total_cost: string;      // Correspondiente a DECIMAL(10, 2), puedes usar string o number
-}
 
 
 export const getBookings = (req: Request, res: Response) => {

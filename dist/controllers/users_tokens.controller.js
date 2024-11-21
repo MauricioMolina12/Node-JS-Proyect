@@ -1,9 +1,18 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validate_token = exports.deleteTokens = exports.tokensExp = exports.generateToken = void 0;
+exports.validate_token = exports.id_token = exports.deleteTokens = exports.tokensExp = exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const connection_1 = __importDefault(require("../db/connection"));
 // Secret key for JWT
@@ -61,7 +70,6 @@ const deleteTokens = (req, res) => {
             if (error) {
                 return res.status(500).json({ message: 'Error al procesar el logout' });
             }
-            console.log(results);
             res.json({ message: 'Logout exitoso' });
         });
         const date = new Date(Date.now());
@@ -69,12 +77,24 @@ const deleteTokens = (req, res) => {
     }
 };
 exports.deleteTokens = deleteTokens;
-const validate_token = (req, res) => {
+const id_token = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Verifica la firma y la expiración del token
+        const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET); // Decodifica el token
+        return decoded.userId;
+    }
+    catch (err) {
+        return;
+    }
+});
+exports.id_token = id_token;
+const validate_token = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = req.body;
     const date = new Date(Date.now());
     try {
         // Verifica la firma y la expiración del token
         const decoded = jsonwebtoken_1.default.verify(token, JWT_SECRET); // Decodifica el token
+        req.body.userId = decoded.userId;
         (0, exports.tokensExp)(date);
         // Si la verificación es exitosa, devuelve la respuesta de validación
         res.json({ valid: true });
@@ -83,5 +103,5 @@ const validate_token = (req, res) => {
         // Si el token es inválido o ha expirado, devuelve un error
         res.status(401).json({ valid: false, message: 'Token inválido o expirado' });
     }
-};
+});
 exports.validate_token = validate_token;

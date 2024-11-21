@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.putCar = exports.postCar = exports.deleteCar = exports.getCar = exports.getCars = void 0;
+exports.availableCar = exports.putCar = exports.postCar = exports.deleteCar = exports.getCar = exports.getCars = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const getCars = (req, res) => {
     connection_1.default.query('SELECT * FROM Cars', ((error, data) => {
@@ -59,3 +59,12 @@ const putCar = (req, res) => {
     }));
 };
 exports.putCar = putCar;
+const availableCar = (req, res) => {
+    const { start, end, license_plate } = req.body;
+    connection_1.default.query('SELECT isitavailable(?, ?, ?) AS is_available', [start, end, license_plate], ((error, data) => {
+        if (error)
+            throw error;
+        res.json(data);
+    }));
+};
+exports.availableCar = availableCar;

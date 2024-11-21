@@ -1,17 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import connection from "../db/connection";
-import { RowDataPacket } from "mysql2";
 import bcrypt from 'bcrypt';
+import { User } from "../interfaces";
 
-interface User extends RowDataPacket {
-    id: number;
-    c_name: string;
-    address: string;
-    phone: string;
-    email: string ;
-    password: string; 
-    role_id: number;  
-}
+
 
 const saltRounds = 10; // Número de rondas para el salt de bcrypt
 

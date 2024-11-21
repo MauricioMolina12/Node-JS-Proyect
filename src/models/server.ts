@@ -3,6 +3,7 @@ import routesUsers from '../routes/users.routes';
 import connection from '../db/connection';
 import routesCars from '../routes/cars.routes';
 import routesBookings from '../routes/bookings.routes';
+import routesFavoritesCar from '../routes/favoritescar.routes';
 import cors from 'cors';
 
 class Server {
@@ -32,7 +33,8 @@ class Server {
     routes(){
         this.app.use('/api/users', routesUsers),
         this.app.use('/api/cars', routesCars),
-        this.app.use('/api/bookings', routesBookings)
+        this.app.use('/api/bookings', routesBookings),
+        this.app.use('/api/favoritesCars', routesFavoritesCar)
     }
 
     conectDB(){

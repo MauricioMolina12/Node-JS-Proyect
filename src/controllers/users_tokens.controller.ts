@@ -6,6 +6,9 @@ import connection from "../db/connection";
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_key';
 const TOKEN_EXPIRATION = '1h'; // Por ejemplo, 1 hora
 
+interface DecodedToken {
+    userId: string;
+}
 
 export const generateToken = (req: Request, res: Response): void => {
     // Revisa si el usuario fue autenticado
@@ -71,7 +74,6 @@ export const deleteTokens = (req: Request, res: Response) =>{
             if (error) {
                 return res.status(500).json({ message: 'Error al procesar el logout' });
             }
-            console.log(results)
             res.json({ message: 'Logout exitoso' });
         });
 
@@ -83,15 +85,29 @@ export const deleteTokens = (req: Request, res: Response) =>{
     
 }
 
-export const validate_token = (req: Request, res: Response) => {
+export const id_token = async (token: string) =>{
+    try {
+        // Verifica la firma y la expiración del token
+        const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken; // Decodifica el token
+        
+        return decoded.userId
+        
+    } catch (err) {
+        return;
+    }
+}
+
+export const validate_token = async (req: Request, res: Response) => {
     const { token } = req.body;
     const date = new Date(Date.now());
     
 
     try {
         // Verifica la firma y la expiración del token
-        const decoded = jwt.verify(token, JWT_SECRET); // Decodifica el token
-
+        const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken; // Decodifica el token
+        
+        req.body.userId = decoded.userId
+        
         tokensExp(date);
 
         // Si la verificación es exitosa, devuelve la respuesta de validación
