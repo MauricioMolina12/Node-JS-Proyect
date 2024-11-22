@@ -13,7 +13,6 @@ export const getUsers = (req: Request, res: Response) => {
         if(error) throw error;
         res.json(data);
     }))
-
 }
 
 export const getUser = (req: Request, res: Response) => {
@@ -26,6 +25,13 @@ export const getUser = (req: Request, res: Response) => {
         
         res.json(data[0]);
     });
+}
+
+export const getCustomer = (req: Request, res: Response) => {
+    connection.query('SELECT id, c_name, address, phone, email FROM Users WHERE role_id = 4', ((error, data) => {
+        if(error) throw error;
+        res.json(data);
+    }))
 }
 
 export const deleteUser = (req: Request, res: Response) => {
@@ -132,6 +138,7 @@ export const verifyUserCredentials = (req: Request, res: Response, next: NextFun
         res.locals.user = {
             id: user.id,
             email: user.email,
+            role: user.role_id
             // Puedes agregar otros datos del usuario si los necesitas
         };
 

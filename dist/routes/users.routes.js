@@ -5,6 +5,7 @@ const users_controller_1 = require("../controllers/users.controller");
 const users_tokens_controller_1 = require("../controllers/users_tokens.controller");
 const router = (0, express_1.Router)();
 router.get('/', users_controller_1.getUsers);
+router.get('/customer', users_controller_1.getCustomer);
 router.get('/:id', users_controller_1.getUser);
 router.delete('/:id', users_controller_1.deleteUser);
 router.post('/logout', users_tokens_controller_1.deleteTokens);

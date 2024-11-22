@@ -4,6 +4,7 @@ const express_1 = require("express");
 const bookings_controller_1 = require("../controllers/bookings.controller");
 const router = (0, express_1.Router)();
 router.get('/:token', bookings_controller_1.getBookings);
+router.get('/datebusy/:id_car', bookings_controller_1.dateCarBusy);
 router.delete('/:id', bookings_controller_1.deleteBookings);
 router.post('/', bookings_controller_1.postBookings);
 router.put('/:id', bookings_controller_1.putCancelBookings);

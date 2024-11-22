@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyUserCredentials = exports.putUser = exports.postUser = exports.deleteUser = exports.getUser = exports.getUsers = void 0;
+exports.verifyUserCredentials = exports.putUser = exports.postUser = exports.deleteUser = exports.getCustomer = exports.getUser = exports.getUsers = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const saltRounds = 10; // Número de rondas para el salt de bcrypt
@@ -33,6 +33,14 @@ const getUser = (req, res) => {
     });
 };
 exports.getUser = getUser;
+const getCustomer = (req, res) => {
+    connection_1.default.query('SELECT id, c_name, address, phone, email FROM Users WHERE role_id = 4', ((error, data) => {
+        if (error)
+            throw error;
+        res.json(data);
+    }));
+};
+exports.getCustomer = getCustomer;
 const deleteUser = (req, res) => {
     const { id } = req.params;
     connection_1.default.query('DELETE FROM Users WHERE id = ?', id, (error, data) => {
@@ -124,6 +132,7 @@ const verifyUserCredentials = (req, res, next) => {
         res.locals.user = {
             id: user.id,
             email: user.email,
+            role: user.role_id
             // Puedes agregar otros datos del usuario si los necesitas
         };
         // Continúa con el siguiente middleware (el controlador de token)

@@ -40,10 +40,7 @@ export const generateToken = (req: Request, res: Response): void => {
                     message: 'Inicio de sesión exitoso',
                     token,
                     expiresAt,
-                    user: {
-                        id: user.id,
-                        email: user.email,
-                    },
+                    user
                 });
                 tokensExp(date);
             }

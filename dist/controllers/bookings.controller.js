@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.putModifyBookings = exports.putCancelBookings = exports.postBookings = exports.deleteBookings = exports.getBookings = void 0;
+exports.dateCarBusy = exports.putModifyBookings = exports.putCancelBookings = exports.postBookings = exports.deleteBookings = exports.getBookings = void 0;
 const connection_1 = __importDefault(require("../db/connection"));
 const users_tokens_controller_1 = require("./users_tokens.controller");
 const getBookings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -104,3 +104,14 @@ const putModifyBookings = (req, res) => {
     }));
 };
 exports.putModifyBookings = putModifyBookings;
+const dateCarBusy = (req, res) => {
+    const { id_car } = req.params;
+    connection_1.default.query('SELECT start_date, end_date FROM Bookings WHERE l_plate = ?', [id_car], ((error, data) => {
+        if (error)
+            throw error;
+        res.json({
+            data
+        });
+    }));
+};
+exports.dateCarBusy = dateCarBusy;

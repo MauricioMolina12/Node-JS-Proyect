@@ -99,4 +99,14 @@ export const putModifyBookings = (req: Request, res: Response) => {
     }));
 }
 
+export const dateCarBusy = (req: Request, res: Response) => {
+    const { id_car } = req.params;
+    
+    connection.query('SELECT start_date, end_date FROM Bookings WHERE l_plate = ?', [id_car], ((error, data) => {
+        if(error) throw error;
+        res.json({
+            data
+        })
+    }))
+}
 

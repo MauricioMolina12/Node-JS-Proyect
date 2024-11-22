@@ -41,10 +41,7 @@ const generateToken = (req, res) => {
                 message: 'Inicio de sesión exitoso',
                 token,
                 expiresAt,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                },
+                user
             });
             (0, exports.tokensExp)(date);
         });
