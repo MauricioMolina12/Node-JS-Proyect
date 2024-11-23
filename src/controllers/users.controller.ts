@@ -137,8 +137,11 @@ export const verifyUserCredentials = (req: Request, res: Response, next: NextFun
         // Retorna el usuario para el controlador de UserToken
         res.locals.user = {
             id: user.id,
+            name: user.c_name,
             email: user.email,
-            role: user.role_id
+            role: user.role_id,
+            phone: user.phone,
+            address: user.address 
             // Puedes agregar otros datos del usuario si los necesitas
         };
 
